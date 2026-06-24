@@ -264,9 +264,13 @@ io.on('connection', (socket) => {
   socket.on('reconnectGame', ({ roomId, role, name }) => {
     const room = rooms[roomId];
     if (!room) { socket.emit('error', { message: 'Salle introuvable.' }); return; }
-    // Re-register this socket with its role
+    // Re-register this socket with its role, cancelling any pending disconnect timer
     const existing = Object.values(room.players).find(p => p.role === role);
     if (existing) {
+      if (existing.disconnectTimer) {
+        clearTimeout(existing.disconnectTimer);
+        existing.disconnectTimer = null;
+      }
       delete room.players[existing.id];
     }
     room.players[socket.id] = { id: socket.id, name: name || 'Joueur', role };
@@ -388,15 +392,26 @@ io.on('connection', (socket) => {
     const room = getRoomForSocket(socket.id);
     if (!room) return;
     const player = room.players[socket.id];
+
     if (player && room.started && !room.gameOver) {
-      triggerExplosion(room, `${player.name} a quitté la partie. La bombe a explosé !`);
-    }
-    delete room.players[socket.id];
-    if (Object.keys(room.players).length === 0 && !room.started) {
-      if (room.timer) clearInterval(room.timer);
-      delete rooms[room.id];
-    } else if (Object.keys(room.players).length > 0) {
-      io.to(room.id).emit('playerList', Object.values(room.players));
+      // Grace period: give the player 15s to reconnect (e.g. page redirect)
+      player.disconnectTimer = setTimeout(() => {
+        if (room.players[player.id]) {
+          triggerExplosion(room, `${player.name} a quitté la partie. La bombe a explosé !`);
+          delete room.players[player.id];
+        }
+      }, 15000);
+      // Keep player slot but mark as disconnected so getRoomForSocket still works
+      // (we update the id so queries still find the room via player.id)
+      player.id = socket.id;
+    } else {
+      delete room.players[socket.id];
+      if (Object.keys(room.players).length === 0 && !room.started) {
+        if (room.timer) clearInterval(room.timer);
+        delete rooms[room.id];
+      } else if (Object.keys(room.players).length > 0) {
+        io.to(room.id).emit('playerList', Object.values(room.players));
+      }
     }
   });
 
