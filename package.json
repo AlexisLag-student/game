@@ -1,7 +1,7 @@
 {
   "name": "bomb-defusal",
   "version": "1.0.0",
-  "description": "Jeu multijoueur de desamorcage de bombe - 3 roles asymetriques",
+  "description": "Jeu multijoueur de désamorçage de bombe - 3 rôles asymétriques",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
