@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOMB DEFUSAL</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="lobby-body">
+  <div class="lobby-container">
+    <div class="bomb-header">
+      <div class="bomb-icon">&#x1F4A3;</div>
+      <h1 class="title">BOMB DEFUSAL</h1>
+      <p class="subtitle">3 joueurs &middot; 3 r&ocirc;les &middot; 1 bombe &middot; Coop&eacute;rez ou mourrez</p>
+    </div>
+    <div class="roles-info">
+      <div class="role-card bomber">
+        <div class="role-icon">&#x1F534;</div>
+        <h3>D&Eacute;MINEUR</h3>
+        <p>Manipule la bombe<br><strong>Ne voit pas le manuel</strong><br>Peut parler &middot; Peut entendre</p>
+      </div>
+      <div class="role-card expert">
+        <div class="role-icon">&#x1F4D6;</div>
+        <h3>EXPERT</h3>
+        <p>A le manuel<br><strong>Ne peut pas parler</strong><br>Utilise des signaux &middot; Peut entendre</p>
+      </div>
+      <div class="role-card relay">
+        <div class="role-icon">&#x1F507;</div>
+        <h3>RELAIS</h3>
+        <p>Fait le lien<br><strong>Ne peut pas entendre</strong><br>Pas d'audio &middot; Peut parler</p>
+      </div>
+    </div>
+    <div class="lobby-panels">
+      <div class="panel">
+        <h2>&#x1F3E0; Cr&eacute;er une salle</h2>
+        <div class="form-group"><label>Votre pseudo</label><input type="text" id="createName" placeholder="Ex: Alice" maxlength="16"></div>
+        <button class="btn btn-create" onclick="createRoom()">CR&Eacute;ER UNE PARTIE</button>
+      </div>
+      <div class="panel-divider">OU</div>
+      <div class="panel">
+        <h2>&#x1F517; Rejoindre une salle</h2>
+        <div class="form-group"><label>Votre pseudo</label><input type="text" id="joinName" placeholder="Ex: Bob" maxlength="16"></div>
+        <div class="form-group"><label>Code de la salle</label><input type="text" id="joinCode" placeholder="Ex: A1B2C3" maxlength="6" style="text-transform:uppercase"></div>
+        <button class="btn btn-join" onclick="joinRoom()">REJOINDRE</button>
+      </div>
+    </div>
+    <div id="waitingRoom" class="waiting-room hidden">
+      <div class="room-code-display">Code : <span id="displayRoomCode" class="room-code"></span> <button class="copy-btn" onclick="copyCode()">&#x1F4CB; Copier</button></div>
+      <p class="waiting-text">En attente... <span id="playerCount">1</span>/3</p>
+      <div id="playerListDisplay" class="player-list"></div>
+      <p class="role-display">Votre r&ocirc;le : <span id="myRole" class="role-tag"></span></p>
+      <div class="role-reminder" id="roleReminder"></div>
+    </div>
+    <div id="errorMsg" class="error-msg hidden"></div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="lobby.js"></script>
+</body>
+</html>

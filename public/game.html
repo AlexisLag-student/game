@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOMB DEFUSAL - En jeu</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="game-body">
+  <div class="hud">
+    <div class="hud-timer" id="hudTimer"><span class="timer-label">&#x23F1;</span><span id="timerDisplay">5:00</span></div>
+    <div class="hud-strikes">
+      <span id="strike1" class="strike-dot empty">&#x2715;</span>
+      <span id="strike2" class="strike-dot empty">&#x2715;</span>
+      <span id="strike3" class="strike-dot empty">&#x2715;</span>
+    </div>
+    <div class="hud-players" id="hudPlayers"></div>
+    <div class="hud-serial">N&deg; S&eacute;rie : <span id="serialDisplay">------</span></div>
+  </div>
+  <div class="game-layout">
+    <div id="bombView" class="main-view hidden">
+      <div class="view-title" id="viewTitle">BOMBE</div>
+      <div id="modulesContainer" class="modules-container"></div>
+    </div>
+    <div id="manualView" class="main-view hidden">
+      <div class="view-title manual-title">MANUEL DE DESAMORCAGE</div>
+      <div id="manualContainer" class="manual-container"></div>
+    </div>
+    <div class="chat-panel">
+      <div class="chat-header">
+        <span id="chatRoleLabel"></span>
+        <span id="deafIndicator" class="deaf-badge hidden">MODE SOURD</span>
+      </div>
+      <div id="chatMessages" class="chat-messages"></div>
+      <div id="chatInputArea" class="chat-input-area hidden">
+        <input type="text" id="chatInput" placeholder="Ecrivez un message..." maxlength="200">
+        <button onclick="sendChat()">ENVOYER</button>
+      </div>
+      <div id="expertSignalArea" class="expert-signals hidden">
+        <p class="signal-label">Vos signaux (cliquez pour envoyer)</p>
+        <div class="signal-groups">
+          <div class="signal-group"><span class="group-label">Numeros</span><div class="signals">
+            <button class="sig-btn" onclick="sendSignal('1')">1</button>
+            <button class="sig-btn" onclick="sendSignal('2')">2</button>
+            <button class="sig-btn" onclick="sendSignal('3')">3</button>
+            <button class="sig-btn" onclick="sendSignal('4')">4</button>
+            <button class="sig-btn" onclick="sendSignal('5')">5</button>
+          </div></div>
+          <div class="signal-group"><span class="group-label">Couleurs</span><div class="signals">
+            <button class="sig-btn wire-RED" onclick="sendSignal('ROUGE')">ROUGE</button>
+            <button class="sig-btn wire-BLUE" onclick="sendSignal('BLEU')">BLEU</button>
+            <button class="sig-btn wire-GREEN" onclick="sendSignal('VERT')">VERT</button>
+            <button class="sig-btn wire-YELLOW" onclick="sendSignal('JAUNE')">JAUNE</button>
+            <button class="sig-btn wire-WHITE" onclick="sendSignal('BLANC')">BLANC</button>
+            <button class="sig-btn wire-BLACK" onclick="sendSignal('NOIR')">NOIR</button>
+          </div></div>
+          <div class="signal-group"><span class="group-label">Actions</span><div class="signals">
+            <button class="sig-btn action" onclick="sendSignal('COUPER')">COUPER</button>
+            <button class="sig-btn action" onclick="sendSignal('APPUYER')">APPUYER</button>
+            <button class="sig-btn action" onclick="sendSignal('MAINTENIR')">MAINTENIR</button>
+            <button class="sig-btn action" onclick="sendSignal('RELACHER')">RELACHER</button>
+          </div></div>
+          <div class="signal-group"><span class="group-label">Positions</span><div class="signals">
+            <button class="sig-btn pos" onclick="sendSignal('PREMIER')">1ER</button>
+            <button class="sig-btn pos" onclick="sendSignal('DERNIER')">DERNIER</button>
+            <button class="sig-btn pos" onclick="sendSignal('MILIEU')">MILIEU</button>
+          </div></div>
+          <div class="signal-group"><span class="group-label">Reponses</span><div class="signals">
+            <button class="sig-btn yes" onclick="sendSignal('OUI')">OUI</button>
+            <button class="sig-btn no" onclick="sendSignal('NON')">NON</button>
+            <button class="sig-btn wait" onclick="sendSignal('ATTENDRE')">ATTENDRE</button>
+            <button class="sig-btn urgent" onclick="sendSignal('URGENT!')">URGENT!</button>
+          </div></div>
+          <div class="signal-group"><span class="group-label">Simon Says</span><div class="signals">
+            <button class="sig-btn wire-RED" onclick="sendSignal('APPUIE ROUGE')">ROUGE</button>
+            <button class="sig-btn wire-BLUE" onclick="sendSignal('APPUIE BLEU')">BLEU</button>
+            <button class="sig-btn wire-GREEN" onclick="sendSignal('APPUIE VERT')">VERT</button>
+            <button class="sig-btn wire-YELLOW" onclick="sendSignal('APPUIE JAUNE')">JAUNE</button>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="gameOverOverlay" class="game-over-overlay hidden">
+    <div class="game-over-box">
+      <div id="gameOverIcon" class="game-over-icon"></div>
+      <h2 id="gameOverTitle"></h2>
+      <p id="gameOverMsg"></p>
+      <button class="btn btn-restart" onclick="restartGame()">REJOUER</button>
+    </div>
+  </div>
+  <div id="explosionFx" class="explosion-fx hidden"></div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
